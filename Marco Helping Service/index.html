@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marco Helping Service</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-top: #173671;
+      --bg-bottom: #07162f;
+      --card-bg: #b7c9f0;
+      --text-color: #111;
+      --border-color: #000;
+      --primary-btn: #67c7ff;
+      --secondary-btn: #e57a99;
+      --accent-red: #8b1111;
+      --close-btn: #fff0d0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+      background: linear-gradient(180deg, var(--bg-top) 0%, var(--bg-bottom) 100%);
+      color: var(--text-color);
+      overflow-x: hidden;
+      position: relative;
+    }
+
+    .background {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .square {
+      position: absolute;
+      background: #1d8fff;
+      opacity: 0.25;
+      animation-name: floatFade;
+      animation-timing-function: ease-in-out;
+      animation-iteration-count: infinite;
+      will-change: transform, opacity;
+    }
+
+    .square.dark {
+      background: #0d3d7a;
+      opacity: 0.18;
+    }
+
+    .square.s1  { width: 42px; height: 42px; top: 4%; left: 8%; animation-duration: 6s; animation-delay: 0s; }
+    .square.s2  { width: 36px; height: 36px; top: 18%; left: 4%; animation-duration: 7s; animation-delay: 1s; }
+    .square.s3  { width: 45px; height: 45px; top: 68%; left: 5%; animation-duration: 8s; animation-delay: 2s; }
+    .square.s4  { width: 50px; height: 50px; bottom: 6%; left: 1.5%; animation-duration: 7.5s; animation-delay: 1.2s; }
+    .square.s5  { width: 34px; height: 34px; top: 8%; left: 28%; animation-duration: 6.2s; animation-delay: 0.8s; }
+    .square.s6  { width: 48px; height: 48px; top: 2%; right: 4%; animation-duration: 7.2s; animation-delay: 1.5s; }
+    .square.s7  { width: 44px; height: 44px; top: 20%; right: 6%; animation-duration: 6.8s; animation-delay: 0.4s; }
+    .square.s8  { width: 40px; height: 40px; top: 46%; right: 5%; animation-duration: 7.8s; animation-delay: 1.8s; }
+    .square.s9  { width: 36px; height: 36px; top: 58%; right: 18%; animation-duration: 6.2s; animation-delay: 0.9s; }
+    .square.s10 { width: 48px; height: 48px; bottom: 10%; right: 10%; animation-duration: 8.2s; animation-delay: 2.5s; }
+    .square.s11 { width: 40px; height: 40px; bottom: 4%; right: 3%; animation-duration: 7.1s; animation-delay: 1.1s; }
+    .square.s12 { width: 30px; height: 30px; top: 72%; right: 28%; animation-duration: 6.7s; animation-delay: 0.3s; }
+
+    @keyframes floatFade {
+      0% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.12;
+      }
+      25% {
+        opacity: 0.4;
+      }
+      50% {
+        transform: translateY(-16px) scale(1.04);
+        opacity: 0.85;
+      }
+      75% {
+        opacity: 0.35;
+      }
+      100% {
+        transform: translateY(0px) scale(1);
+        opacity: 0.12;
+      }
+    }
+
+    .page {
+      position: relative;
+      z-index: 1;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+
+    .card {
+      width: min(100%, 840px);
+      background: var(--card-bg);
+      border: 3px solid var(--border-color);
+      box-shadow: 10px 10px 0 var(--border-color);
+      padding: clamp(24px, 4vw, 48px) clamp(16px, 4vw, 30px);
+      text-align: center;
+    }
+
+    .profile-photo {
+      width: clamp(120px, 22vw, 170px);
+      height: clamp(120px, 22vw, 170px);
+      object-fit: cover;
+      object-position: center;
+      border-radius: 50%;
+      border: 4px solid var(--border-color);
+      display: block;
+      margin: 0 auto 18px auto;
+      background: #0a1d40;
+      aspect-ratio: 1 / 1;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(2rem, 5vw, 3.8rem);
+      line-height: 1.1;
+      color: #000;
+      word-break: break-word;
+    }
+
+    .tagline {
+      margin: 12px auto 28px;
+      font-size: clamp(0.95rem, 2.2vw, 1.45rem);
+      max-width: 90%;
+      line-height: 1.4;
+    }
+
+    .button-row {
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
+      width: 100%;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-width: 220px;
+      max-width: 100%;
+      padding: 15px 20px;
+      border: 3px solid var(--border-color);
+      box-shadow: 5px 5px 0 var(--border-color);
+      font-size: clamp(1rem, 2vw, 1.1rem);
+      font-weight: 700;
+      text-decoration: none;
+      color: #000;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      background: white;
+    }
+
+    .btn:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 3px 3px 0 var(--border-color);
+    }
+
+    .btn-primary {
+      background: var(--primary-btn);
+    }
+
+    .btn-secondary {
+      background: var(--secondary-btn);
+    }
+
+    .icon {
+      font-size: 1.05rem;
+      line-height: 1;
+      flex-shrink: 0;
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, 0.6);
+      padding: 16px;
+      z-index: 10;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(100%, 860px);
+      max-height: 92vh;
+      overflow-y: auto;
+      background: var(--card-bg);
+      border: 3px solid var(--border-color);
+      box-shadow: 10px 10px 0 var(--border-color);
+      padding: clamp(20px, 3vw, 34px) clamp(16px, 3vw, 28px);
+    }
+
+    .modal-box h2 {
+      margin: 0 0 24px;
+      text-align: center;
+      color: var(--accent-red);
+      font-size: clamp(1.9rem, 5vw, 3.6rem);
+      letter-spacing: 1px;
+      line-height: 1.1;
+    }
+
+    .terms-section {
+      text-align: left;
+      font-size: clamp(0.98rem, 2vw, 1.15rem);
+      line-height: 1.7;
+      color: #111;
+    }
+
+    .terms-section h3 {
+      margin: 0 0 14px;
+      font-size: clamp(1.2rem, 3vw, 1.55rem);
+      text-decoration: underline;
+      line-height: 1.3;
+    }
+
+    .divider {
+      border: 0;
+      border-top: 4px solid #000;
+      margin: 28px 0;
+    }
+
+    .pricing-list,
+    .rules-list {
+      padding-left: 24px;
+      margin: 10px 0 0;
+    }
+
+    .pricing-list li,
+    .rules-list li {
+      margin-bottom: 12px;
+    }
+
+    .notice {
+      background: rgba(255, 255, 255, 0.45);
+      border-left: 6px solid #000;
+      padding: 16px;
+      margin-top: 18px;
+      font-weight: 700;
+      word-break: break-word;
+    }
+
+    .close-wrap {
+      text-align: center;
+      margin-top: 28px;
+    }
+
+    .close-btn {
+      background: var(--close-btn);
+      border: 3px solid var(--border-color);
+      box-shadow: 5px 5px 0 var(--border-color);
+      padding: 14px 26px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+      max-width: 100%;
+    }
+
+    .close-btn:hover {
+      transform: translate(2px, 2px);
+      box-shadow: 3px 3px 0 var(--border-color);
+    }
+
+    @media (max-width: 768px) {
+      .page {
+        padding: 24px 14px;
+      }
+
+      .card {
+        box-shadow: 7px 7px 0 var(--border-color);
+      }
+
+      .button-row {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn {
+        width: 100%;
+        min-width: unset;
+      }
+
+      .modal-box {
+        box-shadow: 7px 7px 0 var(--border-color);
+      }
+
+      .divider {
+        margin: 22px 0;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .page {
+        align-items: center;
+        padding: 18px 12px;
+      }
+
+      .card {
+        padding: 22px 14px;
+        border-width: 2.5px;
+        box-shadow: 5px 5px 0 var(--border-color);
+      }
+
+      .profile-photo {
+        border-width: 3px;
+        margin-bottom: 14px;
+      }
+
+      .tagline {
+        margin-bottom: 22px;
+      }
+
+      .btn {
+        padding: 14px 16px;
+        border-width: 2.5px;
+        box-shadow: 4px 4px 0 var(--border-color);
+      }
+
+      .modal {
+        padding: 10px;
+      }
+
+      .modal-box {
+        padding: 18px 14px;
+        border-width: 2.5px;
+        box-shadow: 5px 5px 0 var(--border-color);
+      }
+
+      .close-btn {
+        width: 100%;
+        padding: 14px 18px;
+        border-width: 2.5px;
+        box-shadow: 4px 4px 0 var(--border-color);
+      }
+
+      .square.s1,
+      .square.s6,
+      .square.s10 {
+        transform: scale(0.8);
+      }
+    }
+
+    @media (min-width: 1200px) {
+      .page {
+        padding: 48px 24px;
+      }
+
+      .card {
+        max-width: 900px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="background">
+    <div class="square s1"></div>
+    <div class="square s2"></div>
+    <div class="square s3 dark"></div>
+    <div class="square s4 dark"></div>
+    <div class="square s5 dark"></div>
+    <div class="square s6"></div>
+    <div class="square s7"></div>
+    <div class="square s8 dark"></div>
+    <div class="square s9"></div>
+    <div class="square s10 dark"></div>
+    <div class="square s11"></div>
+    <div class="square s12"></div>
+  </div>
+
+  <main class="page">
+    <section class="card">
+      <img class="profile-photo" src="Asset/marco-photo.png" alt="Marco Elevado" />
+
+      <h1>Marco Helping Service</h1>
+      <p class="tagline">Your Friendly Helper in Temu App</p>
+
+      <div class="button-row">
+        <a
+          class="btn btn-primary"
+          href="https://www.facebook.com/marcopaulo.elevado.3"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Message Us <span class="icon">facebook</span>
+        </a>
+
+        <button class="btn btn-secondary" id="openTerms" type="button">
+          Terms of Service <span class="icon">⊕</span>
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="termsModal" aria-hidden="true">
+    <div class="modal-box">
+      <h2>TERMS OF SERVICE</h2>
+
+      <div class="terms-section">
+        <h3>1. Service Description</h3>
+        <p>
+          Do you need help with tapping tasks? No worries — you are in the right place.
+          Marco Helping Service offers simple and friendly assistance for Temu app tapping tasks.
+          My goal is to help you complete your needed taps quickly and smoothly.
+        </p>
+
+        <p>
+          Please send the correct link and full instructions before the work starts so everything is
+          clear on both sides.
+        </p>
+
+        <hr class="divider" />
+
+        <h3>2. Pricing</h3>
+        <ul class="pricing-list">
+          <li><strong>1 tap:</strong> 50 pesos</li>
+          <li><strong>2 taps:</strong> 100 pesos</li>
+          <li><strong>10+ taps:</strong> 1,000 pesos</li>
+        </ul>
+
+        <div class="notice">GCash Number: 09206752720</div>
+
+        <hr class="divider" />
+
+        <h3>3. Simple Terms</h3>
+        <ul class="rules-list">
+          <li>Please send the correct link or instructions before asking for service.</li>
+          <li>Payment should be settled after confirming the service details.</li>
+          <li>Please be respectful and patient during the transaction.</li>
+          <li>If there is any delay or problem, message me first so I can help fix it.</li>
+          <li>Prices may change in the future, but confirmed orders will follow the agreed price.</li>
+        </ul>
+
+        <hr class="divider" />
+
+        <h3>4. Reminder</h3>
+        <p>
+          This is a personal helping service for Temu app tapping assistance. By using this service,
+          you agree to the prices and simple terms written above.
+        </p>
+
+        <div class="close-wrap">
+          <button class="close-btn" id="closeTerms" type="button">Understood ✓</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById("termsModal");
+    const openBtn = document.getElementById("openTerms");
+    const closeBtn = document.getElementById("closeTerms");
+
+    openBtn.addEventListener("click", function () {
+      modal.classList.add("active");
+      modal.setAttribute("aria-hidden", "false");
+    });
+
+    closeBtn.addEventListener("click", function () {
+      modal.classList.remove("active");
+      modal.setAttribute("aria-hidden", "true");
+    });
+
+    modal.addEventListener("click", function (event) {
+      if (event.target === modal) {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+      }
+    });
+
+    document.addEventListener("keydown", function (event) {
+      if (event.key === "Escape") {
+        modal.classList.remove("active");
+        modal.setAttribute("aria-hidden", "true");
+      }
+    });
+  </script>
+</body>
+</html>
